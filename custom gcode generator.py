@@ -10,11 +10,6 @@ pusher_separation = 45
 magnet_separation_radius = 15
 num_points_to_interpolate = 20#TODO
 center_z = 0#TODO
-#test_extruder_length = 100#TODO
-test_pusher_length_per_revolution = 10#mm#TODO
-max_feed_rate_z = 12#mm/s
-max_feed_rate_x = 180#mm/s
-max_feed_rate_e = 80#mm/s
 
 e_per_arc_length = 1#TODO
 
@@ -34,20 +29,12 @@ def generate_rotation(center_x, num_revolutions, direction, output_file):
 
     output_file.write(';start interpolate {} revolutions of a XZ circle with {} points centered at X{} Z{}\n'.format(num_revolutions, num_points_to_interpolate, center_x, center_z))
     for _ in range(num_revolutions):
-        for i in range(1,len(angles)):#exclude first point because we are already there
-            #output_file.write(str(len(angles))+ '\n\n')
-            prev_x = magnet_separation_radius*np.cos(angles[i-1]) + center_x
-            prev_z = magnet_separation_radius*np.sin(angles[i-1]) + center_z        
+        for i in range(1,len(angles)):#exclude first point because we are already there      
             
             x = magnet_separation_radius*np.cos(angles[i]) + center_x
             z = magnet_separation_radius*np.sin(angles[i]) + center_z
 
-            d_x = np.abs(x-prev_x)
-            d_z = np.abs(z-prev_z)
-
-            physical_dist = np.sqrt(np.power(d_x, 2)+ np.power(d_z, 2))
-            e = physical_dist*e_per_arc_length
-            output_file.write('G1 X{0:.2f} Z{0:.2f} E{0:.2f}\n'.format(x, z, e))
+            output_file.write('G1 X{0:.2f} Z{0:.2f}\n'.format(x, z))
     output_file.write(';end interpolate {} revolutions of a XZ circle with {} points centered at X{} Z{}\n'.format(num_revolutions, num_points_to_interpolate, center_x, center_z))
 
 
